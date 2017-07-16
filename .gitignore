@@ -1,0 +1,5 @@
+.idea/
+src/github.com
+src/downloader/tmp
+bin/
+pkg/
