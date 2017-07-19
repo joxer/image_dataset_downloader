@@ -5,19 +5,29 @@ import (
 	"log"
 	"os"
 	"io"
-	"fmt"
 	"net/http"
 	"strings"
 )
 
-type Downloader struct {
+type Downloader interface {
+	getImage(string, int)
+	downloadImage()
+}
+
+type FlickrDownloader struct {
 	api_key string;
 	secret_key string;
 	messages chan string;
 	prefix string;
 }
 
-func (d Downloader) getImage(image_type string, limit int) {
+func instance(api_key string, secret_key string, prefix string) *FlickrDownloader {
+
+	fd := &FlickrDownloader{api_key,secret_key,nil,prefix}
+	return fd
+}
+
+func (d *FlickrDownloader) getImage(image_type string, limit int) {
 	var flickr = flickr.NewFlickr(d.api_key,d.secret_key);
 
 	go d.downloadImage()
@@ -45,7 +55,7 @@ func (d Downloader) getImage(image_type string, limit int) {
 	}
 }
 
-func (d *Downloader) downloadImage() {
+func (d *FlickrDownloader) downloadImage() {
 	for  url := range d.getChannel() {
 		response, e := http.Get(url)
 		if e != nil {
@@ -71,7 +81,7 @@ func (d *Downloader) downloadImage() {
 	}
 }
 
-func (d *Downloader) getChannel() chan string {
+func (d *FlickrDownloader) getChannel() chan string {
 	if d.messages == nil {
 		d.messages = make(chan string, 100)
 	}

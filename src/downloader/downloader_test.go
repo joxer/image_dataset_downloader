@@ -6,7 +6,7 @@ import (
 )
 
 func TestDownloadWork(t *testing.T) {
-
-	d := Downloader{api_key: os.Getenv("api_key"), secret_key: os.Getenv("secret_key"), prefix: os.Getenv("prefix")};
+	var d Downloader;
+	d = instance(os.Getenv("api_key"), os.Getenv("secret_key"), os.Getenv("prefix"))
 	d.getImage("Italia", 10)
 }
